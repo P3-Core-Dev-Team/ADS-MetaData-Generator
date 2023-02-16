@@ -1,6 +1,7 @@
 package org.example;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.bind.v2.schemagen.xmlschema.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -12,9 +13,7 @@ import org.example.metadata.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Main {
 
@@ -38,7 +37,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        String filePath = "/Users/p3solution/Downloads/DBO";
+        String filePath = "/home/clement/Documents/Data/MIXED_DATA/DBO";
         File file = new File(filePath);
         String schemaName = file.getName();
         File[] tablesFolder = file.listFiles();
@@ -140,8 +139,8 @@ public class Main {
                 .metadata(metadata)
                 .build();
 
-        System.out.println();
-        System.out.println();
+System.out.println();
+System.out.println();
 //        File file = new File("C:\\Users\\DELL\\Documents\\my spring boot project\\ParquetToMetaData\\src\\main\\resources\\MeteData.json");
 //        FileWriter writer = new FileWriter(file);
 //        writer.write(new Gson().toJson(metadata));
@@ -149,7 +148,7 @@ public class Main {
 //        writer.close();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(new File("Users/p3solution/Documents/MetaData.json"), root);
+        objectMapper.writeValue(new File("/home/clement/Documents/Data/MIXED_DATA/DBO/metadata.json"), root);
 
     }
 
@@ -158,19 +157,19 @@ public class Main {
         System.out.println("primitiveType: "+primitiveType);
         System.out.println("originalType: "+originalType);
 
-        if (primitiveType.toUpperCase().equals("INT96") && originalType.equals(null)){
+        if (primitiveType.toUpperCase() == "INT96" && originalType== null){
             return "DATETIME";
         }else if (originalType.startsWith("TIME") || originalType.startsWith("DATE")){
             return "DATETIME";
         }else if(primitiveType.toUpperCase().contains("INT") && (originalType == null||originalType.toUpperCase().contains("INT"))){
             return "NUMBER";
-        } else if (primitiveType.toUpperCase().equals("BOOLEAN") && originalType.equals(null)) {
+        } else if (primitiveType.toUpperCase() == "BOOLEAN" && originalType == null) {
             return "BOOLEAN";
-        } else if (primitiveType.toUpperCase().equals("BINARY") && originalType.toUpperCase().equals("UTF8") ) {
+        } else if (primitiveType.toUpperCase() == "BINARY" && originalType.toUpperCase() == "UTF8") {
             return "STRING";
-        } else if (primitiveType.toUpperCase().equals("FLOAT") && originalType.equals(null)) {
+        } else if (primitiveType.toUpperCase() == "FLOAT" && originalType == null) {
             return "DOUBLE";
-        } else if (primitiveType.toUpperCase().equals("DOUBLE") && originalType.equals(null)) {
+        } else if (primitiveType.toUpperCase() == "DOUBLE" && originalType == null) {
             return "DOUBLE";
         }
         return "STRING";

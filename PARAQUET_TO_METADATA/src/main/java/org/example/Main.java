@@ -45,15 +45,11 @@ public class Main {
 
         for (File tableFile: tablesFolder) {
             String tableName = tableFile.getName();
-            System.out.println();
-            System.out.println();
-            System.out.println(tableName);
             File[] parquetFiles = tableFile.listFiles();
             List<Column> columns = new ArrayList<>();
             if(parquetFiles!= null)
             for (File parquetFile: parquetFiles ) {
                 if (parquetFile.getName().endsWith(".parquet")) {
-//                    metaDataConversion.metaDataConvertor(parquetFile, schemaName , tableName);
 
                     ParquetFileReader reader = ParquetFileReader.open(HadoopInputFile.fromPath(new Path(parquetFile.getAbsolutePath()), new Configuration()));
                     MessageType schema = reader.getFooter().getFileMetaData().getSchema();
@@ -67,8 +63,7 @@ public class Main {
                             originalType = field.getOriginalType().name();
                         }
 
-                        System.out.println(columnName);
-                        String dataType = getDataType(primitiveType, originalType);
+                        String dataType = dataType = getDataType(primitiveType, originalType);
 
                         columns.add(Column.builder().name(columnName)
                                 .ordinal(ordinal)
@@ -140,41 +135,31 @@ public class Main {
                 .metadata(metadata)
                 .build();
 
-        System.out.println();
-        System.out.println();
-//        File file = new File("C:\\Users\\DELL\\Documents\\my spring boot project\\ParquetToMetaData\\src\\main\\resources\\MeteData.json");
-//        FileWriter writer = new FileWriter(file);
-//        writer.write(new Gson().toJson(metadata));
-//        writer.flush();
-//        writer.close();
-
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writeValue(new File("/Users/p3solution/Documents/PARAQUET_TO_METADATA/src/main/java/org/example/MetaData.json"), root);
+        objectMapper.writeValue(new File("/Users/p3solution/IdeaProjects/ADS-MetaData-Generator/PARAQUET_TO_METADATA/src/main/java/org/example/MetaData.json"), root);
 
     }
 
 
     public static String getDataType(String primitiveType, String originalType) {
-        System.out.println("primitiveType: "+primitiveType);
-        System.out.println("originalType: "+originalType);
 
-        if (primitiveType.toUpperCase().equals("INT96") && originalType.equals(null)){
+        if (primitiveType.toUpperCase().contains("INT96") && originalType == null){
             return "DATETIME";
-        }else if (originalType.startsWith("TIME") || originalType.startsWith("DATE")){
-            return "DATETIME";
-        }else if(primitiveType.toUpperCase().contains("INT") && (originalType == null||originalType.toUpperCase().contains("INT"))){
-            return "NUMBER";
-        } else if (primitiveType.toUpperCase().equals("BOOLEAN") && originalType.equals(null)) {
+        }else if (primitiveType.toUpperCase().startsWith("DOUBLE") && originalType==null) {
+            return "DOUBLE";
+        } else if (primitiveType.toUpperCase().startsWith("BOOLEAN")&& originalType == null) {
             return "BOOLEAN";
-        } else if (primitiveType.toUpperCase().equals("BINARY") && originalType.toUpperCase().equals("UTF8") ) {
+        } else if (primitiveType.toUpperCase().contains("FLOAT") && originalType==null) {
+            return "DOUBLE";
+        }else if(primitiveType.toUpperCase().contains("INT") && (originalType == null||originalType.toUpperCase().contains("INT"))) {
+            return "NUMBER";
+        } else if (originalType.startsWith("TIME") || originalType.startsWith("DATE")){
+            return "DATETIME";
+        } else if (primitiveType.toUpperCase().contains("BINARY") && originalType.toUpperCase().contains("UTF8") ) {
             return "STRING";
-        } else if (primitiveType.toUpperCase().equals("FLOAT") && originalType.equals(null)) {
-            return "DOUBLE";
-        } else if (primitiveType.toUpperCase().equals("DOUBLE") && originalType.equals(null)) {
-            return "DOUBLE";
         }
-        return "STRING";
-
+        else {
+            return "STRING";
+        }
     }
-
 }

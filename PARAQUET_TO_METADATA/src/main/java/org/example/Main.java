@@ -146,11 +146,11 @@ public class Main {
         if (primitiveType.toUpperCase().contains("INT96") && originalType == null){
             return "DATETIME";
         }else if (primitiveType.toUpperCase().startsWith("DOUBLE") && originalType==null) {
-            return "DOUBLE";
+            return "DECIMAL";
         } else if (primitiveType.toUpperCase().startsWith("BOOLEAN")&& originalType == null) {
             return "BOOLEAN";
         } else if (primitiveType.toUpperCase().contains("FLOAT") && originalType==null) {
-            return "DOUBLE";
+            return "DECIMAL";
         }else if(primitiveType.toUpperCase().contains("INT") && (originalType == null||originalType.toUpperCase().contains("INT"))) {
             return "NUMBER";
         } else if (originalType.startsWith("TIME") || originalType.startsWith("DATE")){
